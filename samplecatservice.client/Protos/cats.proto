@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+// import "google/api/annotations.proto";
+
+option csharp_namespace = "samplecatservice.grpc";
+
+package cats;
+
+service Cats {
+  rpc GetCats (EmptyRequest) returns (CatsReply);
+  rpc GetYoungCats (EmptyRequest) returns (CatsReply);
+  rpc GetTeenCats (EmptyRequest) returns (CatsReply);
+  rpc GetOldCats (EmptyRequest) returns (CatsReply);
+  rpc GetCat (CatIdRequest) returns (CatReply);
+  rpc CreateCat (CreateCatRequest) returns (CatReply);
+  rpc UpdateCat (UpdateCatRequest) returns (SuccessReply);
+  rpc RemoveCat (CatIdRequest) returns (SuccessReply);
+}
+
+message CatIdRequest {
+  string Id = 1;
+}
+
+message EmptyRequest {
+  string Id = 1;
+}
+
+message CatReply {
+  string Id = 1;
+  string Name = 2;
+  string Color = 3;
+  string CreatedDate = 4;
+}
+
+message CreateCatRequest {
+  string Name = 2;
+  string Color = 3;
+}
+
+message UpdateCatRequest {
+  string Id = 1;
+  string Name = 2;
+  string Color = 3;
+  string CreatedDate = 4;
+}
+
+message SuccessReply {
+  string Successed = 1;
+}
+
+message CatsReply {
+    repeated CatReply cats = 1;
+}
