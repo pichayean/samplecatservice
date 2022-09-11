@@ -4,8 +4,8 @@ namespace samplecatservice.api.Models
 {
     public class CreateCatRequest
     {
-        public string Name { get; set; }
-        public string Color { get; set; }
+        public string? Name { get; set; }
+        public string? Color { get; set; }
 
         public CatEntity ToEntity()
         {
