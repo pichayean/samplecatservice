@@ -16,54 +16,54 @@ public class CatsController : ControllerBase
     }
 
     [HttpGet, Route("GetCats")]
-    public IActionResult GetCats()
+    public async Task<IActionResult> GetCatsAsync()
     {
-        var response = _catLogics.GetAllCats().Select(cat => new CatResponse(cat)).ToList();
+        var response = (await _catLogics.GetAllCatsAsync()).Select(cat => new CatResponse(cat)).ToList();
         return Ok(response);
     }
 
     [HttpGet, Route("GetYoungCats")]
-    public IActionResult GetYoungCats()
+    public async Task<IActionResult> GetYoungCatsAsync()
     {
-        var response = _catLogics.GetYoungCats().Select(cat => new CatResponse(cat)).ToList();
+        var response = (await _catLogics.GetYoungCatsAsync()).Select(cat => new CatResponse(cat)).ToList();
         return Ok(response);
     }
 
     [HttpGet, Route("GetTeenCats")]
-    public IActionResult GetTeenCats()
+    public async Task<IActionResult> GetTeenCatsAsync()
     {
-        var response = _catLogics.GetTeenCats().Select(cat => new CatResponse(cat)).ToList();
+        var response = (await _catLogics.GetTeenCatsAsync()).Select(cat => new CatResponse(cat)).ToList();
         return Ok(response);
     }
 
     [HttpGet, Route("GetOldCats")]
-    public IActionResult GetOldCats()
+    public async Task<IActionResult> GetOldCatsAsync()
     {
-        var response = _catLogics.GetOldCats().Select(cat => new CatResponse(cat)).ToList();
+        var response = (await _catLogics.GetOldCatsAsync()).Select(cat => new CatResponse(cat)).ToList();
         return Ok(response);
     }
 
     [HttpGet, Route("GetCat")]
-    public IActionResult GetCat(Guid id)
+    public async Task<IActionResult> GetCatAsync(Guid id)
     {
         if (Guid.Empty == id)
             return BadRequest();
 
-        var response = new CatResponse(_catLogics.GetCatById(id));
+        var response = new CatResponse(await _catLogics.GetCatByIdAsync(id));
         return Ok(response);
     }
 
     [HttpPost, Route("CreateCat")]
-    public IActionResult CreateCat(CreateCatRequest cat)
+    public async Task<IActionResult> CreateCatAsync(CreateCatRequest cat)
     {
-        var response = new CreateCatResponse(_catLogics.NewCat(cat.ToEntity()));
+        var response = new CreateCatResponse(await _catLogics.NewCatAsync(cat.ToEntity()));
         return Ok(response);
     }
 
     [HttpPut, Route("UpdateCat")]
-    public IActionResult UpdateCat(CreateCatRequest cat)
+    public async Task<IActionResult> UpdateCatAsync(CreateCatRequest cat)
     {
-        _catLogics.UpdateCat(cat.ToEntity());
+        await _catLogics.UpdateCatAsync(cat.ToEntity());
 
         return Ok(new SuccessResponse()
         {
@@ -72,12 +72,12 @@ public class CatsController : ControllerBase
     }
 
     [HttpDelete, Route("RemoveCat")]
-    public IActionResult RemoveCat(string id)
+    public async Task<IActionResult> RemoveCatAsync(string id)
     {
         if (String.IsNullOrEmpty(id))
             return BadRequest();
 
-        _catLogics.RemoveCat(id);
+        await _catLogics.RemoveCatAsync(id);
         return Ok(new SuccessResponse()
         {
             Successed = true

@@ -1,37 +1,55 @@
 using samplecatservice.Entities;
+using StackExchange.Redis;
 using System.Text.Json;
 
 namespace samplecatservice.Repository;
-public class CatRepository
+public class CatRepository: IRepository
 {
-    private List<CatEntity> Cats;
+    private readonly IDatabase _db;
+    private readonly string REDIS_CAT_KEY = "samplecatsservice";
 
-    public CatRepository()
+    public CatRepository(IConnectionMultiplexer redis)
     {
-        if (Cats == null) 
-            Cats = new List<CatEntity>();
+        _db = redis.GetDatabase();
     }
 
-    public CatEntity Insert(CatEntity cat)
+    public async Task<CatEntity> InsertAsync(CatEntity cat)
     {
-        Cats.Add(cat);
+        var oldCats = (await GetAsync()).ToList();
+        oldCats.Add(cat);
+        var cats = JsonSerializer.Serialize(oldCats);
+        await SetDataAsync(cats);
         return cat;
     }
 
-    public void Update(CatEntity cat)
+    public async Task UpdateAsync(CatEntity cat)
     {
-        var _cat = Cats.First(_ => _.Id.Equals(cat.Id));
-        _cat.Name = cat.Name;
-        _cat.Color = cat.Color;
+        var oldCats = (await GetAsync()).ToList();
+        oldCats.Remove(oldCats.First(_=>_.Id == cat.Id));
+        oldCats.Add(cat);
+        var cats = JsonSerializer.Serialize(oldCats);
+        await SetDataAsync(cats);
     }
 
-    public void Remove(CatEntity cat)
+    public async Task RemoveAsync(CatEntity cat)
     {
-        Cats.Remove(cat);
+        var oldCats = (await GetAsync()).ToList();
+        oldCats.Remove(oldCats.First(_=>_.Id == cat.Id));
+        var cats = JsonSerializer.Serialize(oldCats);
+        await SetDataAsync(cats);
     }
 
-    public IEnumerable<CatEntity> Get()
+    public async Task<IEnumerable<CatEntity>> GetAsync()
     {
-        return Cats;
+        var catsData = await _db.StringGetAsync(REDIS_CAT_KEY);
+        if (!catsData.HasValue)
+            return new List<CatEntity>();
+
+        var cats = JsonSerializer.Deserialize<IEnumerable<CatEntity>>(catsData.ToString());
+        if (cats == null)
+            return new List<CatEntity>();
+        return cats;
     }
+
+    private async Task SetDataAsync(string data) => await _db.StringSetAsync(REDIS_CAT_KEY, data);
 }

@@ -46,12 +46,12 @@
             "dockerBuild": {
                 "tag": "samplecatservice:dev",
                 "target": "base",
-                "dockerfile": "${workspaceFolder}/samplecatservice.grpc/Dockerfile",
+                "dockerfile": "${workspaceFolder}/samplecatservice.api/Dockerfile",
                 "context": "${workspaceFolder}",
                 "pull": true
             },
             "netCore": {
-                "appProject": "${workspaceFolder}/samplecatservice.grpc/samplecatservice.grpc.csproj"
+                "appProject": "${workspaceFolder}/samplecatservice.api/samplecatservice.api.csproj"
             }
         },
         {
@@ -62,12 +62,12 @@
             ],
             "dockerBuild": {
                 "tag": "samplecatservice:latest",
-                "dockerfile": "${workspaceFolder}/samplecatservice.grpc/Dockerfile",
+                "dockerfile": "${workspaceFolder}/samplecatservice.api/Dockerfile",
                 "context": "${workspaceFolder}",
                 "pull": true
             },
             "netCore": {
-                "appProject": "${workspaceFolder}/samplecatservice.grpc/samplecatservice.grpc.csproj"
+                "appProject": "${workspaceFolder}/samplecatservice.api/samplecatservice.api.csproj"
             }
         },
         {
@@ -78,7 +78,7 @@
             ],
             "dockerRun": {},
             "netCore": {
-                "appProject": "${workspaceFolder}/samplecatservice.grpc/samplecatservice.grpc.csproj",
+                "appProject": "${workspaceFolder}/samplecatservice.api/samplecatservice.api.csproj",
                 "enableDebugging": true
             }
         },
@@ -90,7 +90,7 @@
             ],
             "dockerRun": {},
             "netCore": {
-                "appProject": "${workspaceFolder}/samplecatservice.grpc/samplecatservice.grpc.csproj"
+                "appProject": "${workspaceFolder}/samplecatservice.api/samplecatservice.api.csproj"
             }
         }
     ]

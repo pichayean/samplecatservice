@@ -14,10 +14,10 @@ public class CatsService : Cats.CatsBase
         _catLogics = catLogics;
     }
 
-    public override Task<CatsReply> GetCats(EmptyRequest request, ServerCallContext context)
+    public override async Task<CatsReply> GetCats(EmptyRequest request, ServerCallContext context)
     {
         var catsReplay = new CatsReply();
-        var cats = _catLogics.GetAllCats().Select(_ => new CatReply
+        var cats = (await _catLogics.GetAllCatsAsync()).Select(_ => new CatReply
         {
             Id = _.Id.ToString(),
             Name = _.Name,
@@ -25,13 +25,13 @@ public class CatsService : Cats.CatsBase
             CreatedDate = _.CreatedDate.ToString()
         });
         catsReplay.Cats.AddRange(cats);
-        return Task.FromResult(catsReplay);
+        return catsReplay;
     }
 
-    public override Task<CatsReply> GetYoungCats(EmptyRequest request, ServerCallContext context)
+    public override async Task<CatsReply> GetYoungCats(EmptyRequest request, ServerCallContext context)
     {
         var catsReplay = new CatsReply();
-        var cats = _catLogics.GetYoungCats().Select(_ => new CatReply
+        var cats = (await _catLogics.GetYoungCatsAsync()).Select(_ => new CatReply
         {
             Id = _.Id.ToString(),
             Name = _.Name,
@@ -39,13 +39,13 @@ public class CatsService : Cats.CatsBase
             CreatedDate = _.CreatedDate.ToString()
         });
         catsReplay.Cats.AddRange(cats);
-        return Task.FromResult(catsReplay);
+        return catsReplay;
     }
 
-    public override Task<CatsReply> GetTeenCats(EmptyRequest request, ServerCallContext context)
+    public override async Task<CatsReply> GetTeenCats(EmptyRequest request, ServerCallContext context)
     {
         var catsReplay = new CatsReply();
-        var cats = _catLogics.GetTeenCats().Select(_ => new CatReply
+        var cats = (await _catLogics.GetTeenCatsAsync()).Select(_ => new CatReply
         {
             Id = _.Id.ToString(),
             Name = _.Name,
@@ -53,13 +53,13 @@ public class CatsService : Cats.CatsBase
             CreatedDate = _.CreatedDate.ToString()
         });
         catsReplay.Cats.AddRange(cats);
-        return Task.FromResult(catsReplay);
+        return catsReplay;
     }
 
-    public override Task<CatsReply> GetOldCats(EmptyRequest request, ServerCallContext context)
+    public override async Task<CatsReply> GetOldCats(EmptyRequest request, ServerCallContext context)
     {
         var catsReplay = new CatsReply();
-        var cats = _catLogics.GetOldCats().Select(_ => new CatReply
+        var cats = (await _catLogics.GetOldCatsAsync()).Select(_ => new CatReply
         {
             Id = _.Id.ToString(),
             Name = _.Name,
@@ -67,56 +67,57 @@ public class CatsService : Cats.CatsBase
             CreatedDate = _.CreatedDate.ToString()
         });
         catsReplay.Cats.AddRange(cats);
-        return Task.FromResult(catsReplay);
+        return catsReplay;
     }
 
-    public override Task<CatReply> GetCat(CatIdRequest request, ServerCallContext context)
+    public override async Task<CatReply> GetCat(CatIdRequest request, ServerCallContext context)
     {
-        var cat = _catLogics.GetCatById(new Guid(request.Id));
-        return Task.FromResult(new CatReply()
+        var cat = await _catLogics.GetCatByIdAsync(new Guid(request.Id));
+        return new CatReply()
         {
             Id = cat.Id.ToString(),
             Name = cat.Name,
             Color = cat.Color,
             CreatedDate = cat.CreatedDate.ToString()
-        });
+        };
     }
 
-    public override Task<CatReply> CreateCat(CreateCatRequest request, ServerCallContext context)
+    public override async Task<CatReply> CreateCat(CreateCatRequest request, ServerCallContext context)
     {
-        var cat = _catLogics.NewCat(new CatEntity
+        var cat = await _catLogics.NewCatAsync(new CatEntity
         {
             Name = request.Name,
             Color = request.Color,
         });
-        return Task.FromResult(new CatReply
+        return new CatReply
         {
             Id = cat.Id.ToString(),
             Name = cat.Name,
             Color = cat.Color,
             CreatedDate = cat.CreatedDate.ToString()
-        });
+        };
     }
 
-    public override Task<SuccessReply> UpdateCat(UpdateCatRequest request, ServerCallContext context)
+    public override async Task<SuccessReply> UpdateCat(UpdateCatRequest request, ServerCallContext context)
     {
-        _catLogics.UpdateCat(new CatEntity
+        await _catLogics.UpdateCatAsync(new CatEntity
         {
             Id = new Guid(request.Id),
             Name = request.Name,
             Color = request.Color,
         });
-        return Task.FromResult(new SuccessReply{
-            Successed = "true"
-        });
-    }
-
-    public override Task<SuccessReply> RemoveCat(CatIdRequest request, ServerCallContext context)
-    {
-        _catLogics.RemoveCat(request.Id);
-        return Task.FromResult(new SuccessReply
+        return new SuccessReply
         {
             Successed = "true"
-        });
+        };
+    }
+
+    public override async Task<SuccessReply> RemoveCat(CatIdRequest request, ServerCallContext context)
+    {
+        await _catLogics.RemoveCatAsync(request.Id);
+        return new SuccessReply
+        {
+            Successed = "true"
+        };
     }
 }

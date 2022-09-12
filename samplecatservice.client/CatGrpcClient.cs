@@ -6,7 +6,7 @@ namespace samplecatservice.client
 {
     public class CatGrpcClient
     {
-        public readonly GrpcChannel channel;
+        private readonly GrpcChannel channel;
         public CatGrpcClient()
         {
             channel = GrpcChannel.ForAddress("http://localhost:5161", new GrpcChannelOptions
@@ -48,6 +48,7 @@ namespace samplecatservice.client
             var client = new grpc.Cats.CatsClient(channel);
             return client.GetCatsAsync(new grpc.EmptyRequest()).GetAwaiter().GetResult();
         }
+        
         public void DeleteCats(string id)
         {
             var client = new grpc.Cats.CatsClient(channel);

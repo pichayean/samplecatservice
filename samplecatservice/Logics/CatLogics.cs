@@ -6,68 +6,68 @@ namespace samplecatservice.Logics
 {
     public class CatLogics : ICatLogics
     {
-        private readonly CatRepository _catRepository;
-        public CatLogics(CatRepository catRepository)
+        private readonly IRepository _catRepository;
+        public CatLogics(IRepository catRepository)
         {
             _catRepository = catRepository;
         }
 
-        public IEnumerable<CatEntity> GetAllCats()
+        public async Task<IEnumerable<CatEntity>> GetAllCatsAsync()
         {
-            return _catRepository.Get();
+            return await _catRepository.GetAsync();
         }
 
-        public CatEntity GetCatById(Guid id)
+        public async Task<CatEntity> GetCatByIdAsync(Guid id)
         {
-            var cat = _catRepository.Get().FirstOrDefault(_ => _.Id == id);
+            var cat = (await _catRepository.GetAsync()).FirstOrDefault(_ => _.Id == id);
             if (cat == null)
                 throw new Exception("This cat not found ^^!");
             return cat;
         }
 
-        public CatEntity NewCat(CatEntity cat)
+        public async Task<CatEntity> NewCatAsync(CatEntity cat)
         {
             cat.Id = Guid.NewGuid();
             cat.CreatedDate = DateTime.Now;
-            return _catRepository.Insert(cat);
+            return await _catRepository.InsertAsync(cat);
         }
 
-        public void RemoveCat(string id)
+        public async Task RemoveCatAsync(string id)
         {
-            var cat = _catRepository.Get().FirstOrDefault(_ => _.Id == new Guid(id));
+            var cat = (await _catRepository.GetAsync()).FirstOrDefault(_ => _.Id == new Guid(id));
             if (cat == null)
                 throw new Exception("This cat not found ^^!");
 
-            _catRepository.Remove(cat);
+            await _catRepository.RemoveAsync(cat);
         }
 
-        public void UpdateCat(CatEntity cat)
+        public async Task UpdateCatAsync(CatEntity cat)
         {
-            var catInRow = _catRepository.Get().FirstOrDefault(_ => _.Id == cat.Id);
+            var catInRow = (await _catRepository.GetAsync()).FirstOrDefault(_ => _.Id == cat.Id);
             if (catInRow == null)
                 throw new Exception("This cat not found ^^!");
 
             catInRow.Name = cat.Name;
             catInRow.Color = cat.Color;
-            _catRepository.Update(catInRow);
+            await _catRepository.UpdateAsync(catInRow);
         }
 
-        public IEnumerable<CatEntity> GetYoungCats()
+        public async Task<IEnumerable<CatEntity>> GetYoungCatsAsync()
         {
-            return _catRepository.Get()
-             .Where(_ => DbFunctions.DiffYears(_.CreatedDate, DateTime.Now) <= 3);
+            return (await _catRepository.GetAsync())
+                 .Where(_ => DbFunctions.DiffYears(_.CreatedDate, DateTime.Now) <= 3);
         }
 
-        public IEnumerable<CatEntity> GetTeenCats()
+        public async Task<IEnumerable<CatEntity>> GetTeenCatsAsync()
         {
-            return _catRepository.Get()
+            return (await _catRepository.GetAsync())
              .Where(_ => DbFunctions.DiffYears(_.CreatedDate, DateTime.Now) > 3
              && DbFunctions.DiffMonths(_.CreatedDate, DateTime.Now) <= 6);
         }
 
-        public IEnumerable<CatEntity> GetOldCats()
+        public async Task<IEnumerable<CatEntity>> GetOldCatsAsync()
         {
-            return _catRepository.Get()
+            return (await _catRepository.GetAsync())
              .Where(_ => DbFunctions.DiffYears(_.CreatedDate, DateTime.Now) > 6);
         }
     }

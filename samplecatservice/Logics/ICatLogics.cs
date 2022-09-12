@@ -4,13 +4,13 @@ namespace samplecatservice.Logics
 {
     public interface ICatLogics
     {
-        IEnumerable<CatEntity> GetAllCats();
-        CatEntity GetCatById(Guid id);
-        IEnumerable<CatEntity> GetYoungCats();
-        IEnumerable<CatEntity> GetTeenCats();
-        IEnumerable<CatEntity> GetOldCats();
-        CatEntity NewCat(CatEntity cat);
-        void UpdateCat(CatEntity cat);
-        void RemoveCat(string id);
+        Task<IEnumerable<CatEntity>> GetAllCatsAsync();
+        Task<CatEntity> GetCatByIdAsync(Guid id);
+        Task<IEnumerable<CatEntity>> GetYoungCatsAsync();
+        Task<IEnumerable<CatEntity>> GetTeenCatsAsync();
+        Task<IEnumerable<CatEntity>> GetOldCatsAsync();
+        Task<CatEntity> NewCatAsync(CatEntity cat);
+        Task UpdateCatAsync(CatEntity cat);
+        Task RemoveCatAsync(string id);
     }
 }
